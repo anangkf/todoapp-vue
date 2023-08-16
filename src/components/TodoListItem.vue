@@ -23,7 +23,7 @@ const todoStore = useTodosStore()
         {{ todo.completed ? 'Undone' : 'Done' }}
       </button>
       <!-- <button class="btn info" @click="todoStore.editTodo(todo)" v-else>Undone</button> -->
-      <button class="btn">Delete</button>
+      <button class="btn" @click="todoStore.deleteTodo(todo.id)">Delete</button>
     </div>
   </div>
 </template>
@@ -39,11 +39,10 @@ const todoStore = useTodosStore()
   border-radius: 8px;
   min-width: 38rem;
   transition: ease 1s;
+}
 
-  & .completed {
-    text-decoration: line-through;
-    opacity: 0.8;
-  }
+.completed p {
+  text-decoration: line-through;
 }
 
 .wrapper:hover {

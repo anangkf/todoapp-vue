@@ -26,12 +26,10 @@ type TodoBody = {
   category: string
 }
 
-type GetTodosType = () => Promise<Todo[]>
-
 export const useTodosStore = defineStore('todos', () => {
   const todos = ref<Todo[] | undefined>([])
 
-  const getTodos: GetTodosType = async () => {
+  const getTodos = async (): Promise<Todo[]> => {
     try {
       const res: TodoFromAPI = await axios.get(`${CONST.BASE_URL_API}/api/todo`, {
         headers: {
@@ -77,14 +75,31 @@ export const useTodosStore = defineStore('todos', () => {
           }
         }
       )
-      const editedIndex = todos.value?.findIndex((todo) => todo.id === id) as number
 
-      todos.value?.splice(editedIndex, 1, { ...todos.value[editedIndex], ...res.data.data })
+      todos.value = todos.value?.map((todo) => {
+        if (todo.id === id) return { id, ...editedTodo, ...res.data.data }
+        return todo
+      })
     } catch (error: any) {
       alert(error.response.data.error)
       throw error
     }
   }
 
-  return { todos, getTodos, addTodo, editTodo }
+  const deleteTodo = async (id: number) => {
+    try {
+      await axios.delete(`${CONST.BASE_URL_API}/api/todo/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getCookie('token')}`
+        }
+      })
+
+      todos.value = todos.value?.filter((todo) => todo.id !== id)
+    } catch (error: any) {
+      alert(error.response.data.error)
+      throw error
+    }
+  }
+
+  return { todos, getTodos, addTodo, editTodo, deleteTodo }
 })
