@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import axios from 'axios'
+import router from '@/router/index'
+import { useAuthStore } from '@/stores/auth'
 import CONST from '@/utils/constant'
 
-const INIT_FORM_REGISTER = {
-  name: '',
+const INIT_FORM_LOGIN = {
   username: '',
-  email: '',
-  password: '',
-  role: 'user'
+  password: ''
 }
 
-const registerInput = ref({ ...INIT_FORM_REGISTER })
+const auth = useAuthStore()
+
+const loginInput = ref({ ...INIT_FORM_LOGIN })
 
 const onSubmit = async () => {
   try {
-    const res = await axios.post(`${CONST.BASE_URL_API}/auth/register`, registerInput.value)
-    console.log(res)
-    registerInput.value = INIT_FORM_REGISTER
+    const res = await axios.post(`${CONST.BASE_URL_API}/auth/login`, loginInput.value)
+    loginInput.value = INIT_FORM_LOGIN
+    auth.setToken(res.data.data.token)
+    router.push('/')
   } catch (error: any) {
     alert(error.message)
   }
@@ -27,30 +29,14 @@ const onSubmit = async () => {
 <template>
   <h2>Login</h2>
   <form class="login-form" @submit.prevent="onSubmit">
-    <label for="name">
-      Nama
-      <input type="text" name="name" id="name" v-model="registerInput.name" required />
-    </label>
-    <br />
     <label for="username">
       Username
-      <input type="text" name="username" id="username" v-model="registerInput.username" required />
-    </label>
-    <br />
-    <label for="email">
-      Email
-      <input type="email" name="email" id="email" v-model="registerInput.email" required />
+      <input type="text" name="username" id="username" v-model="loginInput.username" required />
     </label>
     <br />
     <label for="password">
       Password
-      <input
-        type="password"
-        name="password"
-        id="password"
-        v-model="registerInput.password"
-        required
-      />
+      <input type="password" name="password" id="password" v-model="loginInput.password" required />
     </label>
     <br />
     <p>

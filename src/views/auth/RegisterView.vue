@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import CONST from '@/utils/constant'
+import router from '@/router'
 
 const INIT_FORM_REGISTER = {
   name: '',
@@ -15,8 +16,9 @@ const registerInput = ref({ ...INIT_FORM_REGISTER })
 const onSubmit = async () => {
   try {
     const res = await axios.post(`${CONST.BASE_URL_API}/auth/register`, registerInput.value)
-    console.log(res)
     registerInput.value = INIT_FORM_REGISTER
+    alert(`Registration for ${res.data.data.name} success!`)
+    router.push('/auth/login')
   } catch (error: any) {
     alert(error.message)
   }
@@ -53,10 +55,10 @@ const onSubmit = async () => {
     </label>
     <br />
     <p>
-      Belum punya akun?
-      <RouterLink to="/auth/register">Daftar</RouterLink>
+      Sudah punya akun?
+      <RouterLink to="/auth/login">Login</RouterLink>
     </p>
-    <button>Login</button>
+    <button>Register</button>
   </form>
 </template>
 <style></style>
