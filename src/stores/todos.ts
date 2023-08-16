@@ -48,7 +48,7 @@ export const useTodosStore = defineStore('todos', () => {
 
   const addTodo = async (data: TodoBody) => {
     try {
-      const res = await axios.post(`${CONST.BASE_URL_API}/api/todo`, data, {
+      await axios.post(`${CONST.BASE_URL_API}/api/todo`, data, {
         headers: {
           Authorization: `Bearer ${getCookie('token')}`
         }
@@ -59,12 +59,32 @@ export const useTodosStore = defineStore('todos', () => {
         createdAt: new Date().toISOString(),
         completed: false
       })
-      console.log(res.data.data)
     } catch (error: any) {
       alert(error.response.data.error)
       throw error
     }
   }
 
-  return { todos, getTodos, addTodo }
+  const editTodo = async (data: Todo) => {
+    try {
+      const { id, ...editedTodo } = data
+      const res = await axios.put(
+        `${CONST.BASE_URL_API}/api/todo/${id}`,
+        { ...editedTodo, completed: !editedTodo.completed },
+        {
+          headers: {
+            Authorization: `Bearer ${getCookie('token')}`
+          }
+        }
+      )
+      const editedIndex = todos.value?.findIndex((todo) => todo.id === id) as number
+
+      todos.value?.splice(editedIndex, 1, { ...todos.value[editedIndex], ...res.data.data })
+    } catch (error: any) {
+      alert(error.response.data.error)
+      throw error
+    }
+  }
+
+  return { todos, getTodos, addTodo, editTodo }
 })

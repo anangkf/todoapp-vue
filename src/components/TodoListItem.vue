@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { Todo } from '@/stores/todos'
+import { useTodosStore } from '@/stores/todos'
 
 defineProps<{
   todo: Todo
 }>()
+
+const todoStore = useTodosStore()
 </script>
 <template>
   <div class="wrapper" :class="{ completed: todo.completed }">
@@ -12,8 +15,14 @@ defineProps<{
       <p class="desc">{{ todo.description }}</p>
     </div>
     <div class="btn-wrapper">
-      <button class="btn success" v-if="!todo.completed">Done</button>
-      <button class="btn info" v-else>Undone</button>
+      <button
+        class="btn"
+        :class="{ success: !todo.completed, info: todo.completed }"
+        @click="todoStore.editTodo(todo)"
+      >
+        {{ todo.completed ? 'Undone' : 'Done' }}
+      </button>
+      <!-- <button class="btn info" @click="todoStore.editTodo(todo)" v-else>Undone</button> -->
       <button class="btn">Delete</button>
     </div>
   </div>
