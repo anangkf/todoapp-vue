@@ -37,3 +37,9 @@ const todo = useTodosStore()
     <button>Add</button>
   </form>
 </template>
+
+<style scoped>
+form {
+  margin: 1rem 0;
+}
+</style>

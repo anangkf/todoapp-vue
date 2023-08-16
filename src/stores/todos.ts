@@ -5,7 +5,7 @@ import CONST from '@/utils/constant'
 import { getCookie } from 'typescript-cookie'
 import generateId from '@/utils/generateId'
 
-interface Todo {
+export interface Todo {
   id: number
   title: string
   createdAt: string
